@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
+    <title>Candidate Place</title>
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div id="map-canvas"></div>
+    <div class="container-fluid" id="main">
+        <div class="row">
+            <div class="col-xs-8" id="left">
+                <h2>Candidate Place Generator</h2>
+                <!-- item list -->
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="">Select User Log File</a></div>
+                </div>
+                <div id="file">
+                    <input type="file" id="files" name="files[]" multiple />
+                    <output id="list"></output>
+                    <script src="js/tag_file_read_file.js"></script>
+                </div>
+
+                <hr>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="">Candidate Place Table</a></div>
+                </div>
+                <div id="head_label"></div>
+                <table id="placeTable" class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="col-xs-5">Place Name</th>
+                        <th class="col-xs-4">Category</th>
+                        <!--<th class="col-xs-3">Link</th>-->
+                    </tr>
+                    </thead>
+
+                    <tbody></tbody>
+                </table>
+
+                <!--<div class="panel panel-default">-->
+                    <!--<div class="panel-heading"><a href="">Item heading</a></div>-->
+                <!--</div>-->
+                <!--<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate.-->
+                    <!--Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis-->
+                    <!--dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan.-->
+                    <!--Aliquam in felis sit amet augue.</p>-->
+
+                <!--<hr>-->
+
+                <!--<div class="panel panel-default">-->
+                    <!--<div class="panel-heading"><a href="">Item heading</a></div>-->
+                <!--</div>-->
+                <!--<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate.-->
+                    <!--Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis-->
+                    <!--dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan.-->
+                    <!--Aliquam in felis sit amet augue.</p>-->
+
+                <!--<hr>-->
+                <!--&lt;!&ndash; /item list &ndash;&gt;-->
+
+                <!--<p>-->
+                    <!--<a href="http://www.bootply.com/render/129229">Demo</a> | <a href="http://bootply.com/129229">Source Code</a>-->
+                <!--</p>-->
+
+                <!--<hr>-->
+
+                <!--<p>-->
+                    <!--<a href="http://bootply.com" target="_ext" class="center-block btn btn-primary">More Bootstrap Snippets on Bootply</a>-->
+                <!--</p>-->
+
+                <!--<hr>-->
+
+            </div>
+            <div class="col-xs-4"><!--map-canvas will be postioned here--></div>
+
+        </div>
+    </div>
+
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4efBm5pPQFojapLkNtg71AOY2246SJrU&libraries=places&signed_in=true&callback=getNearbySearchAtPlace">
+    </script>
+    <script src="js/google_nearby.js"></script>
+</body>
+</html>
