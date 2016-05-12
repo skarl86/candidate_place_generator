@@ -48,11 +48,10 @@ function getNearbySearchAtPlace() {
         });
         markers.push(marker);
 
-        google.maps.event.addListener(marker,'click', (function(place, marker,contentString){
+        google.maps.event.addListener(marker,'click', (function(place){
             return function() {
                 deleteAllTable();
 
-                infowindow.setContent(contentString);
                 infowindow.open(map,marker);
 
                 // requestNearbyPlace(place);
@@ -64,34 +63,23 @@ function getNearbySearchAtPlace() {
                     location: {lat: place.lat, lng: place.lng},
                     radius: 500,
                     // name: place.label
-                    types: ['store']
+                    types: ['store','bank'],
+                    rankby: google.maps.places.RankBy.DISTANCE
                 }, callback);
             };
-        })(place, marker,contentString));
+        })(place));
     });
 }
 
-function requestNearbyPlace(place) {
-    var apiKey = "AIzaSyD4efBm5pPQFojapLkNtg71AOY2246SJrU";
-    var radius = 500;
-    var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
-    var params = "location="+[place.lat,place.lng].join()+"&radius="+radius+"&key="+apiKey;
-    var http = new XMLHttpRequest();
-
-    http.open("GET", url+"?"+params, true);
-    http.onreadystatechange = function()
-    {
-        if(http.readyState == 4 && http.status == 200) {
-            console.log(http.responseText);
-        }
-    }
-    http.send(null);
-}
-function callback(results, status) {
+function callback(results, status, pagination) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
             addRow(results[i]);
         }
+    }
+    if (pagination.hasNextPage) {
+        sleep:2;
+        pagination.nextPage();
     }
 }
 
@@ -117,3 +105,4 @@ function addRow(place) {
 function deleteAllTable() {
     $('#placeTable > tbody:last').empty();
 }
+
