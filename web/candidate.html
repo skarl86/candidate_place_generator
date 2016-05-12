@@ -6,9 +6,13 @@
     <title>Candidate Place</title>
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/loading_overlay.css">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="js/dist/loading-overlay.min.js"></script>
 
     <link rel="stylesheet" href="css/main.css">
 </head>
@@ -28,6 +32,19 @@
                     <script src="js/tag_file_read_file.js"></script>
                 </div>
 
+                <table id="logTable" class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="col-xs-4">Time</th>
+                        <th class="col-xs-5">Location</th>
+                        <th class="col-xs-4">Tag</th>
+                        <!--<th class="col-xs-3">Link</th>-->
+                    </tr>
+                    </thead>
+
+                    <tbody></tbody>
+                </table>
+
                 <hr>
 
                 <div class="panel panel-default">
@@ -37,7 +54,8 @@
                 <table id="placeTable" class="table table-bordered">
                     <thead>
                     <tr>
-                        <th class="col-xs-5">Place Name</th>
+                        <th class="col-xs-4">Place Name</th>
+                        <th class="col-xs-5">Location</th>
                         <th class="col-xs-4">Category</th>
                         <!--<th class="col-xs-3">Link</th>-->
                     </tr>
@@ -45,6 +63,7 @@
 
                     <tbody></tbody>
                 </table>
+                <div id="loading"></div>
 
                 <!--<div class="panel panel-default">-->
                     <!--<div class="panel-heading"><a href="">Item heading</a></div>-->
@@ -82,6 +101,17 @@
             </div>
             <div class="col-xs-4"><!--map-canvas will be postioned here--></div>
 
+        </div>
+    </div>
+
+    <div class="modal hide" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-header">
+            <h1>Processing...</h1>
+        </div>
+        <div class="modal-body">
+            <div class="progress progress-striped active">
+                <div class="bar" style="width: 100%;"></div>
+            </div>
         </div>
     </div>
 
