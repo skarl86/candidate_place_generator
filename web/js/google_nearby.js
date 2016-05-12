@@ -55,63 +55,12 @@ function getNearbySearchAtPlace() {
 
         google.maps.event.addListener(marker,'click', (function(place){
             return function() {
-
-                target.loadingOverlay();
-
-                var location = {lat: place.lat, lng: place.lng};
-                var radius = 500;
-                nearMarkers.forEach(function(marker) {
-                    marker.setMap(null);
-                });
-                nearMarkers = [];
-
-                deleteAllTable();
-
-                var contentString = '<div id="content">'+
-                    '<div id="siteNotice">'+
-                    '</div>'+
-                    '<h2 id="firstHeading" class="firstHeading">'+place.date+'</h2>'+
-                    '<div id="bodyContent">'+
-                    '<p>Label : <b>'+ place.label +'</b></p>'+
-                    '<p>Location : <b>'+ [place.lat, place.lng].join() +'</b></p>'+
-                    '</div>'+
-                    '</div>';
-
-                logInfoWindow.setContent(contentString);
-                logInfoWindow.open(map,marker);
-
-                // requestNearbyPlace(place);
-
-                refreshHeaderLabel(place);
-
-                if(nearByCircle != null)
-                {
-                    nearByCircle.setMap(null);
-                }
-
-                nearByCircle = new google.maps.Circle({
-                    strokeColor: '#FF0000',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: '#FF0000',
-                    fillOpacity: 0.35,
-                    map: map,
-                    center: location,
-                    radius: radius
-                });
-
-                var service = new google.maps.places.PlacesService(map);
-                service.nearbySearch({
-                    location: location,
-                    radius: radius,
-                    //name: place.label,
-                    types: ['cafe','bank','bakery','restaurant','university','school','pharmacy','department_store'],
-                    rankby: google.maps.places.RankBy.DISTANCE
-                }, callback);
+                searchNearByPlace(place, marker);
             };
         })(place));
     });
 }
+
 
 function callback(results, status, pagination) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -122,7 +71,7 @@ function callback(results, status, pagination) {
         sleep:2;
         pagination.nextPage();
     }else{
-        for (var i = 0; i < allResults.length; i++) {
+        for (var i = allResults.length - 1; i > 0; i--) {
             createMarker(allResults[i]);
             addPlaceRow(allResults[i]);
         }
@@ -130,6 +79,61 @@ function callback(results, status, pagination) {
         allResults = [];
         target.loadingOverlay('remove');
     }
+}
+
+function searchNearByPlace(place, marker){
+    target.loadingOverlay();
+
+    var location = {lat: place.lat, lng: place.lng};
+    var radius = 500;
+    nearMarkers.forEach(function(marker) {
+        marker.setMap(null);
+    });
+    nearMarkers = [];
+
+    deleteAllTable();
+
+    var contentString = '<div id="content">'+
+        '<div id="siteNotice">'+
+        '</div>'+
+        '<h2 id="firstHeading" class="firstHeading">'+place.date+'</h2>'+
+        '<div id="bodyContent">'+
+        '<p>Label : <b>'+ place.label +'</b></p>'+
+        '<p>Location : <b>'+ [place.lat, place.lng].join() +'</b></p>'+
+        '</div>'+
+        '</div>';
+
+    logInfoWindow.setContent(contentString);
+    logInfoWindow.open(map,marker);
+
+    // requestNearbyPlace(place);
+
+    refreshHeaderLabel(place);
+
+    if(nearByCircle != null)
+    {
+        nearByCircle.setMap(null);
+    }
+
+    nearByCircle = new google.maps.Circle({
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+        map: map,
+        center: location,
+        radius: radius
+    });
+
+    var service = new google.maps.places.PlacesService(map);
+    service.nearbySearch({
+        location: location,
+        radius: radius,
+        //name: place.label,
+        types: ['cafe','bank','bakery','restaurant','university','school','pharmacy','department_store','convenience_store'],
+        rankby: google.maps.places.RankBy.DISTANCE
+    }, callback);
 }
 
 function refreshHeaderLabel(place) {
@@ -183,7 +187,26 @@ function selectedLink(location, pMarkersDic, isShowInfo){
     if(isShowInfo){
         placeInfoWindow.setContent(marker.title);
         placeInfoWindow.open(map, marker);
+    }else{
+        var place = placeDic[location];
+        searchNearByPlace(place, marker);
     }
     map.setCenter(marker.getPosition());
     map.setZoom(17);
 }
+
+var rad = function(x) {
+    return x * Math.PI / 180;
+};
+
+var getDistance = function(p1, p2) {
+    var R = 6378137; // Earth’s mean radius in meter
+    var dLat = rad(p2.lat() - p1.lat());
+    var dLong = rad(p2.lng() - p1.lng());
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) *
+        Math.sin(dLong / 2) * Math.sin(dLong / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d; // returns the distance in meter
+};

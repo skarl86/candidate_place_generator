@@ -14,6 +14,7 @@ function handleFileSelect(evt) {
 }
 
 var places = [];
+var placeDic = {};
 
 function createPlaceData(file) {
     var reader = new FileReader();
@@ -30,6 +31,8 @@ function createPlaceData(file) {
 
             var place = {id:n, date:date, lat:lat, lng:lng, label:label.replace("\n","")};
             places.push(place);
+            placeDic[[lat, lng].join()] = place;
+
             addLogRow(place);
         }
         getNearbySearchAtPlace()
