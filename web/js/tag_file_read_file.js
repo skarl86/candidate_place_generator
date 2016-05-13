@@ -4,7 +4,9 @@
 function handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
 
-    deleteAllTable();
+    deleteLogTable();
+    deletePlaceTable();
+    resetMap();
 
     for (var i = 0, f; f = files[i]; i++) {
         //var output = createGPSData(files[i]);
@@ -25,8 +27,8 @@ function createPlaceData(file) {
         for(var n = 0; n < lines.length; n++){
             var elements = lines[n].split('\t');
             var date = elements[0];
-            var lat = parseFloat(elements[1]);
-            var lng = parseFloat(elements[2]);
+            var lat = roundXL(parseFloat(elements[1]),4);
+            var lng = roundXL(parseFloat(elements[2]),4);
             var label = elements[3];
 
             var place = {id:n, date:date, lat:lat, lng:lng, label:label.replace("\n","")};
@@ -53,6 +55,9 @@ function addLogRow(place) {
             // '<button type="button" class="btn btn-default" value = ' + placeType + ' onClick="openConceptNet(this)">ConceptNet</button>' +
         '</tr>');
 }
+function deleteLogTable(){
+    $('#logTable > tbody:last').empty();
+}
 
 function loadScript(src){
     var script = document.createElement("script");
@@ -61,6 +66,14 @@ function loadScript(src){
     script.src = src;
 }
 
+$(function() {
+
+    $('#sel1').on('change', function(){
+        var selected = $(this).find("option:selected").val();
+        console.log(selected);
+    });
+
+});
 
 document.getElementById('files').addEventListener('change', handleFileSelect, false);
 // $('#file #file')e.addEventListener('change', handleFileSelect, false);

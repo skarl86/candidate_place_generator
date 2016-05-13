@@ -97,6 +97,7 @@ function addRow(place) {
         '</td>' +
         '</tr>');
 }
+
 function deleteAllTable() {
     $('#placeTable > tbody:last').empty();
 

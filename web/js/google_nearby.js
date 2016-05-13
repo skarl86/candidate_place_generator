@@ -11,8 +11,13 @@ var nearMarkers = [];
 var nearMarkersDic = {};
 
 var nearByCircle;
+
 var allResults = [];
+var allResultsDic = {};
+
 var target = $('#loading');
+
+var selectedLogPlaceGeometry;
 
 var logInfoWindow;
 var placeInfoWindow;
@@ -34,16 +39,11 @@ function getNearbySearchAtPlace() {
     map.setCenter(bounds.getCenter());
     map.fitBounds(bounds);
 
-    markers.forEach(function(marker) {
-        marker.setMap(null);
-    });
-    markers = [];
+    resetLogMarker();
 
     logInfoWindow = new google.maps.InfoWindow();
 
     places.forEach(function (place) {
-
-
         var marker = new google.maps.Marker({
             map: map,
             title: place.label,
@@ -61,7 +61,43 @@ function getNearbySearchAtPlace() {
     });
 }
 
+function resetLogMarker(){
+    markers.forEach(function(marker) {
+        marker.setMap(null);
+    });
+    markers = [];
+    markersDic = {};
+}
+function resetNearMarker(){
+    nearMarkers.forEach(function(marker) {
+        marker.setMap(null);
+    });
+    nearMarkers = [];
+    nearMarkersDic = {};
+}
 
+function resetNearByResults(){
+    allResults = [];
+    allResultsDic = {};
+}
+
+function resetMap(){
+    resetLogMarker();
+    resetNearMarker();
+
+    if(logInfoWindow != null){
+        logInfoWindow.close();
+    }
+
+    if(placeInfoWindow != null){
+        placeInfoWindow.close();
+    }
+
+    if(nearByCircle != null) {
+        nearByCircle.setMap(null);
+    }
+    selectedLogPlaceGeometry = null;
+}
 function callback(results, status, pagination) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         allResults = allResults.concat(results);
@@ -71,12 +107,24 @@ function callback(results, status, pagination) {
         sleep:2;
         pagination.nextPage();
     }else{
-        for (var i = allResults.length - 1; i > 0; i--) {
+        allResults.sort(function (p1, p2) {
+            var a = parseInt(getDistance(p1.geometry.location, selectedLogPlaceGeometry));
+            var b = parseInt(getDistance(p2.geometry.location, selectedLogPlaceGeometry));
+            return a-b;
+        });
+
+        for (var i = 0; i < allResults.length; i++) {
+            var place = allResults[i];
+            allResultsDic[place.id] = parseInt(getDistance(place.geometry.location, selectedLogPlaceGeometry));
+
             createMarker(allResults[i]);
             addPlaceRow(allResults[i]);
         }
         console.log("not has next page");
-        allResults = [];
+
+        sortingByValue(allResultsDic);
+        resetNearByResults();
+
         target.loadingOverlay('remove');
     }
 }
@@ -85,13 +133,14 @@ function searchNearByPlace(place, marker){
     target.loadingOverlay();
 
     var location = {lat: place.lat, lng: place.lng};
-    var radius = 500;
+    var radius = parseInt($("#sel1").find("option:selected").val());
+
     nearMarkers.forEach(function(marker) {
         marker.setMap(null);
     });
     nearMarkers = [];
 
-    deleteAllTable();
+    deletePlaceTable();
 
     var contentString = '<div id="content">'+
         '<div id="siteNotice">'+
@@ -131,7 +180,7 @@ function searchNearByPlace(place, marker){
         location: location,
         radius: radius,
         //name: place.label,
-        types: ['cafe','bank','bakery','restaurant','university','school','pharmacy','department_store','convenience_store'],
+        types: ['food'],
         rankby: google.maps.places.RankBy.DISTANCE
     }, callback);
 }
@@ -156,7 +205,7 @@ function createMarker(place) {
     var lng = place.geometry.location.lng();
 
     nearMarkers.push(marker);
-    nearMarkersDic[[lat, lng].join()] = marker;
+    nearMarkersDic[[roundXL(lat,4), roundXL(lng,4)].join()] = marker;
 
     placeInfoWindow = new google.maps.InfoWindow();
 
@@ -171,15 +220,17 @@ function addPlaceRow(place) {
         '<tr>' +
         '<td class="col-xs-4">' + place.name + '</td>' +
         '<td class="col-xs-5">' +
-        '<a id="myLink" href="#" onclick="selectedLink(this.text, nearMarkersDic ,true);return false;">' + [place.geometry.location.lat(), place.geometry.location.lng()].join() + '</a></td>' +
+        '<a id="myLink" href="#" onclick="selectedLink(this.text, nearMarkersDic ,true);return false;">' +
+        [roundXL(place.geometry.location.lat(),4), roundXL(place.geometry.location.lng(),4)].join() + '</a></td>' +
         '<td class="col-xs-4">' + place.types[0] + '</td>' +
+        '<td class="col-xs-3">' + allResultsDic[place.id] + '</td>' +
         // '<td class="col-xs-3"> ' +
         // '<button type="button" class="btn btn-default" value = ' + placeType + ' onClick="openConceptNet(this)">ConceptNet</button>' +
         '</td>' +
         '</tr>');
 }
 
-function deleteAllTable() {
+function deletePlaceTable() {
     $('#placeTable > tbody:last').empty();
 }
 function selectedLink(location, pMarkersDic, isShowInfo){
@@ -189,24 +240,9 @@ function selectedLink(location, pMarkersDic, isShowInfo){
         placeInfoWindow.open(map, marker);
     }else{
         var place = placeDic[location];
+        selectedLogPlaceGeometry = new google.maps.LatLng(place.lat, place.lng);
         searchNearByPlace(place, marker);
     }
     map.setCenter(marker.getPosition());
     map.setZoom(17);
 }
-
-var rad = function(x) {
-    return x * Math.PI / 180;
-};
-
-var getDistance = function(p1, p2) {
-    var R = 6378137; // Earth’s mean radius in meter
-    var dLat = rad(p2.lat() - p1.lat());
-    var dLong = rad(p2.lng() - p1.lng());
-    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) *
-        Math.sin(dLong / 2) * Math.sin(dLong / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c;
-    return d; // returns the distance in meter
-};
