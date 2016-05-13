@@ -84,7 +84,16 @@ $(document).ready(function(){
         event.preventDefault(); // To prevent following the link (optional)
         var inputLog = $('#input_log').val();
         var logs = inputLog.split("\n");
-        createPlaceDataByLogs(logs);
+        var newLogs = [];
+        for(var i = 0; i < logs.length; i++){
+            var log = logs[i].toString();
+            newLogs.push(log.replace(/ /gi, "\t"));
+        }
+        deleteLogTable();
+        deletePlaceTable();
+        resetMap();
+
+        createPlaceDataByLogs(newLogs);
     });
 });
 
