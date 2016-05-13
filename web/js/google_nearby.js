@@ -218,8 +218,8 @@ function createMarker(place) {
 function addPlaceRow(place) {
     $('#placeTable > tbody:last').append(
         '<tr>' +
-        '<td class="col-xs-4">' + place.name + '</td>' +
-        '<td class="col-xs-5">' +
+        '<td class="col-xs-5">' + place.name + '</td>' +
+        '<td class="col-xs-4">' +
         '<a id="myLink" href="#" onclick="selectedLink(this.text, nearMarkersDic ,true);return false;">' +
         [roundXL(place.geometry.location.lat(),4), roundXL(place.geometry.location.lng(),4)].join() + '</a></td>' +
         '<td class="col-xs-4">' + place.types[0] + '</td>' +

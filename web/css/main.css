@@ -8,9 +8,19 @@ license: MIT
 author: bootply.com
 */
 
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
 
 html,body{
     height:100%;
+}
+
+body, h1, h2, h3, b, td{
+    font-family: "Nanum Gothic", serif;
+}
+body:lang(en) {
+    /*font-family: 'Source Sans Pro', serif;*/
+    font-family: "Nanum Gothic", serif;
 }
 
 /*body{*/
@@ -63,6 +73,14 @@ html,body{
     overflow:hidden;
 }
 
+#files{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
 #loading {
     height: 50px;
+}
+#run {
+    padding-top: 5px;
+    padding-bottom: 5px;
 }

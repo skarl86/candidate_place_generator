@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/loading_overlay.css">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -16,6 +17,22 @@
 
     <script src="js/util.js"></script>
 
+
+     <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.10/webfont.js"></script>
+    <script type="text/javascript">
+        WebFont.load({
+            // For google fonts
+            google: {
+                families: ['Droid Sans', 'Droid Serif']
+            },
+            // For early access or custom font
+            custom: {
+                families: ['Nanum Gothic'],
+                urls: ['http://fonts.googleapis.com/earlyaccess/nanumgothic.css']
+            }
+        });
+    </script>
+
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -23,18 +40,42 @@
     <div class="container-fluid" id="main">
         <div class="row">
             <div class="col-xs-8" id="left">
-                <h2>Candidate Place Generator Demo</h2>
+                <h1><b>C</b>andidate <b>P</b>lace <b>G</b>enerator <b>D</b>emo</h1>
                 <!-- item list -->
                 <div class="panel panel-default">
-                    <div class="panel-heading"><a href="">Select User Log File</a></div>
+                    <div class="panel-heading"><h4><b>Input</b> or <b>Write</b> User Log File</h4></div>
                 </div>
-                <div id="file">
-                    <input type="file" id="files" name="files[]" multiple />
-                    <output id="list"></output>
-                    <script src="js/tag_file_read_file.js"></script>
+
+                <div id="content">
+                    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                        <li class="active"><a href="#input_file" data-toggle="tab">Input File</a></li>
+                        <li><a href="#write_log" data-toggle="tab">Writing Log</a></li>
+                    </ul>
+                    <div id="my-tab-content" class="tab-content">
+                        <div class="tab-pane active" id="input_file">
+                            <div id="file">
+                                <input type="file" id="files" name="files[]" multiple />
+                                <output id="list"></output>
+                                <script src="js/tag_file_read_file.js"></script>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="write_log">
+                            <div class="form-group">
+                                <textarea class="form-control" rows="5" id="input_log" placeholder="ex)
+** Tab으로 간격.
+201605101805    37.4992 126.9501    사리원만두"
+                                ></textarea>
+                                <div id="run">
+                                    <button id="btn_run" type="button" class="btn btn-primary btn-block">Run</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="sel1">Select Radius:</label>
+                    <label for="sel1">Select to Radius:</label>
                     <select class="form-control" id="sel1" >
                         <option>100 m</option>
                         <option>200 m</option>
@@ -48,8 +89,8 @@
                     <thead>
                     <tr>
                         <th class="col-xs-4">Time</th>
-                        <th class="col-xs-5">Location</th>
-                        <th class="col-xs-4">Tag</th>
+                        <th class="col-xs-4">Location</th>
+                        <th class="col-xs-5">Tag</th>
                         <!--<th class="col-xs-3">Link</th>-->
                     </tr>
                     </thead>
@@ -60,14 +101,14 @@
                 <hr>
 
                 <div class="panel panel-default">
-                    <div class="panel-heading"><a href="">Candidate Place Table</a></div>
+                    <div class="panel-heading"><h4>Candidate Place Table</h4></div>
                 </div>
                 <div id="head_label"></div>
                 <table id="placeTable" class="table table-bordered">
                     <thead>
                     <tr>
-                        <th class="col-xs-4">Place Name</th>
-                        <th class="col-xs-5">Location</th>
+                        <th class="col-xs-5">Place Name</th>
+                        <th class="col-xs-4">Location</th>
                         <th class="col-xs-4">Category</th>
                         <th class="col-xs-3">Distance</th>
                         <!--<th class="col-xs-3">Link</th>-->
